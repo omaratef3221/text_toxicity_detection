@@ -3,6 +3,9 @@ from torch.nn import Sigmoid
 from torch.nn import Module
 from torch.optim import SGD
 from torch.nn import MSELoss
+from torch import nn
+from transformers import BertModel
+
 class BertClassifier(nn.Module):
     def __init__(self):
         super(BertClassifier, self).__init__()
