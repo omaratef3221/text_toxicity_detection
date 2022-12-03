@@ -3,7 +3,9 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 import numpy as np
 from transformers import BertTokenizer
-class get_data:
+from torch.utils.data import Dataset
+import torch
+class get_data(Dataset):
     def __init__(self):
         self.data = pd.read_csv("train_data_version3.csv")
         self.x = self.data["text"]
@@ -19,13 +21,15 @@ class get_data:
     def get_summary(self):
         return self.data.describe()
     def prepare_data(self):
-        X_train, X_test, y_train, y_test = train_test_split(self.data["text"], self.data["y"], test_size=0.25)
+        X_train, X_test, y_train, y_test = train_test_split(self.x, self.y, test_size=0.25)
         X_train = [self.tokenizer(text,padding='max_length', max_length = 512, truncation=True,
-                                return_tensors="pt") for text in X_train]
+                                return_tensors="pt") for text in list(X_train)]
         X_test = [self.tokenizer(text, padding='max_length', max_length=512, truncation=True,
-                                  return_tensors="pt") for text in X_test]
-        y_train = np.array(y_train)
-        y_test = np.array(y_test)
+                                  return_tensors="pt") for text in list(X_test)]
+
+
+        y_train = torch.tensor(list(y_train), dtype=torch.float32)
+        y_test = torch.tensor(list(y_test), dtype=torch.float32)
         train_dl = DataLoader([X_train, y_train], batch_size=16, shuffle=True)
         test_dl = DataLoader([X_test, y_test], batch_size=1024, shuffle=False)
         return train_dl, test_dl

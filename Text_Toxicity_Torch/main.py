@@ -6,6 +6,7 @@ obj = get_data()
 # Print data details
 print(obj.get_len())
 print(obj.get_summary())
+print(obj.prepare_data())
 # Main
 EPOCHS = 25
 model = BertClassifier()
